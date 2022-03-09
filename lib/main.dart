@@ -1,19 +1,59 @@
 import 'package:flutter/material.dart';
 
+import 'widgets/input_suhu.dart';
+import 'widgets/konversi_suhu.dart';
+import 'widgets/perhitungan_terkahir.dart';
+import 'widgets/riwayat_perhitungan.dart';
+import 'widgets/target_perhitungan.dart';
+
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   TextEditingController inputCelcius = TextEditingController();
 
-  var listItem = [
+  List<String> listItem = [
     "Kelvin",
     "Reamur",
     "Fahrenheit",
   ];
+  List<String> listHasil = [];
+  String selectedDropdown = "Kelvin";
+  double hasilKonversi = 0;
+
+  void onDropdownChanged(String? value) {
+    return setState(() {
+      selectedDropdown = value.toString();
+    });
+  }
+
+  void konversi() {
+    return setState(() {
+      if (inputCelcius.text.isEmpty) {
+        hasilKonversi = 0;
+      } else {
+        hasilKonversi = double.parse(inputCelcius.text);
+        if (selectedDropdown == "Kelvin") {
+          hasilKonversi = hasilKonversi + 273.15;
+        } else if (selectedDropdown == "Reamur") {
+          hasilKonversi = hasilKonversi * 4 / 5;
+        } else if (selectedDropdown == "Fahrenheit") {
+          hasilKonversi = hasilKonversi * 9 / 5 + 32;
+        }
+      }
+      listHasil.add("Konversi " +
+          inputCelcius.text +
+          " derajat Celcius ke $selectedDropdown adalah $hasilKonversi");
+    });
+  }
 
   // This widget is the root of your application.
   @override
@@ -32,27 +72,13 @@ class MyApp extends StatelessWidget {
           margin: EdgeInsets.all(10),
           child: Column(
             children: [
-              TextFormField(
-                controller: inputCelcius,
-                decoration: InputDecoration(
-                  labelText: 'Celcius',
-                  hintText: 'Masukkan Suhu dalam Celcius',
-                ),
-                keyboardType: TextInputType.number,
-              ),
+              inputSuhu(inputCelcius: inputCelcius),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 100),
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: listItem[0],
-                  items: listItem.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (value) {},
-                ),
+                child: TargetPerhitungan(
+                    selectedDropdown: selectedDropdown,
+                    listItem: listItem,
+                    onDropdownChanged: onDropdownChanged),
               ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
@@ -60,29 +86,15 @@ class MyApp extends StatelessWidget {
                   children: [
                     Text(
                       "Hasil",
-                      style: TextStyle(fontSize: 18),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 5),
-                    Text(
-                      "0",
-                      style:
-                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                    ),
+                    PerhitunganTerakhir(hasilKonversi: hasilKonversi),
                   ],
                 ),
               ),
-              Container(
-                width: double.infinity,
-                height: 40,
-                child: TextButton(
-                  style: TextButton.styleFrom(backgroundColor: Colors.blue),
-                  onPressed: () {},
-                  child: Text(
-                    "Konversi Suhu",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+              KonversiSuhu(konversi: konversi),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
                 child: Text(
@@ -90,6 +102,7 @@ class MyApp extends StatelessWidget {
                   style: TextStyle(fontSize: 18),
                 ),
               ),
+              RiwayatPerhitungan(listHasil: listHasil),
             ],
           ),
         ),

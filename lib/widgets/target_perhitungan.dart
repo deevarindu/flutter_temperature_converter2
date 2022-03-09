@@ -1,0 +1,31 @@
+import 'package:flutter/material.dart';
+
+class TargetPerhitungan extends StatelessWidget {
+  const TargetPerhitungan({
+    Key? key,
+    required this.selectedDropdown,
+    required this.listItem,
+    required this.onDropdownChanged,
+  }) : super(key: key);
+
+  final String selectedDropdown;
+  final List<String> listItem;
+  final Function onDropdownChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      isExpanded: true,
+      value: selectedDropdown,
+      items: listItem.map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (value) {
+        onDropdownChanged(value);
+      },
+    );
+  }
+}
