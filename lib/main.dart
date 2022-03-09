@@ -76,9 +76,11 @@ class _MyAppState extends State<MyApp> {
               Container(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 100),
                 child: TargetPerhitungan(
-                    selectedDropdown: selectedDropdown,
-                    listItem: listItem,
-                    onDropdownChanged: onDropdownChanged),
+                  selectedDropdown: selectedDropdown,
+                  listItem: listItem,
+                  onDropdownChanged: onDropdownChanged,
+                  konversi: konversi,
+                ),
               ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
